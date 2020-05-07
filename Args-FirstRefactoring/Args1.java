@@ -13,19 +13,18 @@ import java.util.TreeSet;
 public class Args1 {
 
     private String schema;
-    //args array into a list and pass an iterator down to the set
-    //1.
+    //    1. args array into a list and pass an iterator down to the set
     //private String[] args;
     private boolean valid = true;
     private Set<Character> unexpectedArguments = new TreeSet<Character>();
     private Map<Character, ArgumentMarshaler> marshalers = new HashMap<Character, ArgumentMarshaler>();
     private Set<Character> argsFound = new HashSet<Character>();
-    //1. private int currentArgument;
+    //    1. args array into a list and pass an iterator down to the set - add Iterator for currentArgument
     private Iterator<String> currentArgument;
     private char errorArgumentId = '\0';
     private String errorParameter = "TILT";
     private ErrorCode errorCode = ErrorCode.OK;
-    //1.
+    //    1. args array into a list and pass an iterator down to the set - add argsLst
     private List<String> argsList;
 
     private enum ErrorCode {
@@ -38,14 +37,15 @@ public class Args1 {
 
     public Args1(String schema, String[] args) throws ParseException {
         this.schema = schema;
-        //2.Fix the broken code
-        //this.args = args;
+        //    2.Fix the broken code
+        //    this.args = args;
         argsList = Arrays.asList(args);
         valid = parse();
     }
 
     private boolean parse() throws ParseException {
-        //2..if (schema.length() == 0 && args.length == 0)
+        //    2. Fix the broken code
+        //    if (schema.length() == 0 && args.length == 0)
         if (schema.length() == 0 && argsList.size() == 0)
             return true;
         parseSchema();
@@ -70,6 +70,7 @@ public class Args1 {
         char elementId = element.charAt(0);
         String elementTail = element.substring(1);
         validateSchemaElementId(elementId);
+        
         if (isBooleanSchemaElement(elementTail))
             marshalers.put(elementId, new BooleanArgumentMarshaler());
         else if (isStringSchemaElement(elementTail))
@@ -77,15 +78,13 @@ public class Args1 {
         else if (isIntegerSchemaElement(elementTail)) {
             marshalers.put(elementId, new IntegerArgumentMarshaler());
         } else {
-            throw new ParseException(String.format(
-                    "Argument: %c has invalid format: %s.", elementId, elementTail), 0);
+            throw new ParseException(String.format("Argument: %c has invalid format: %s.", elementId, elementTail), 0);
         }
     }
 
     private void validateSchemaElementId(char elementId) throws ParseException {
         if (!Character.isLetter(elementId)) {
-            throw new ParseException(
-                    "Bad character:" + elementId + "in Args format: " + schema, 0);
+            throw new ParseException("Bad character:" + elementId + "in Args format: " + schema, 0);
         }
     }
 
@@ -102,7 +101,7 @@ public class Args1 {
     }
 
     private boolean parseArguments() throws ArgsException {
-        //2
+        //    2. fix the broken code
         //        for (currentArgument = 0; currentArgument < args.length; currentArgument++) {
         //            String arg = args[currentArgument];
         for (currentArgument = argsList.iterator(); currentArgument.hasNext();) {
@@ -132,27 +131,34 @@ public class Args1 {
         }
     }
 
-    //4. Set functions down into the appropriate derivatives
+    
     private boolean setArgument(char argChar) throws ArgsException {
         ArgumentMarshaler m = marshalers.get(argChar);
         if (m == null)
             return false;
         try {
             if (m instanceof BooleanArgumentMarshaler)
-                //4.   setBooleanArg(m);
-                //4-last eliminate setBooleanArgs!
-                // setBooleanArg(m, currentArgument);
+                //    5.  Eliminate setBooleanArgs!
+                //    //    4. Set functions down into the appropriate derivatives
+                //    //   setBooleanArg(m);
+                //    setBooleanArg(m, currentArgument);
                 m.set(currentArgument);
 
             else if (m instanceof StringArgumentMarshaler)
-                //5. Integer and String
-                //setStringArg(m);
+                //    5. Eliminate setStringArg!
+                //    //    4. Set functions down into the appropriate derivatives
+                //    //setStringArg(m);
+                //    setStringArg(m, currentArgument);
                 m.set(currentArgument);
             else if (m instanceof IntegerArgumentMarshaler)
-                //5. setIntArg(m);
+                //    5. Eliminate setIntArg
+                //    //    4. Set functions down into the appropriate derivatives
+                //    //    setIntArg(m);
+                //    setIntArg(m, currentArgument)
                 m.set(currentArgument);
-            // 4.           else
-            //                return false;
+            //    4. Set functions down into the appropriate derivatives
+            //    else
+            //        return false;
         } catch (ArgsException e) {
             valid = false;
             errorArgumentId = argChar;
@@ -162,13 +168,16 @@ public class Args1 {
     }
 
     private void setIntArg(ArgumentMarshaler m) throws ArgsException {
-        //3.        currentArgument++;
+        //    3. Apply chagned type for currentArgument
+        //    currentArgument++;
         String parameter = null;
         try {
-            //3.parameter = args[currentArgument];
+            //    3. Apply chagned type for currentArgument
+            //    parameter = args[currentArgument];
             parameter = currentArgument.next();
             m.set(parameter);
-            //3.       } catch (ArrayIndexOutOfBoundsException e) {
+            //    3. Apply chagned type for currentArgument
+            //    } catch (ArrayIndexOutOfBoundsException e) {
         } catch (NoSuchElementException e) {
             errorCode = ErrorCode.MISSING_INTEGER;
             throw new ArgsException();
@@ -180,10 +189,13 @@ public class Args1 {
     }
 
     private void setStringArg(ArgumentMarshaler m) throws ArgsException {
-        //3.currentArgument++;
+        //    3. Apply chagned type for currentArgument
+        //    currentArgument++;
         try {
-            //3.   m.set(args[currentArgument]);
+            //    3. Apply chagned type for currentArgument
+            //    m.set(args[currentArgument]);
             m.set(currentArgument.next());
+            //    3. Apply chagned type for currentArgument
             //    } catch (ArrayIndexOutOfBoundsException e) {
         } catch (NoSuchElementException e) {
             errorCode = ErrorCode.MISSING_STRING;
@@ -191,13 +203,15 @@ public class Args1 {
         }
     }
 
-    //4.
-    //private void setBooleanArg(ArgumentMarshaler m) {
+    //    4. Set functions down into the appropriate derivatives
+    //    private void setBooleanArg(ArgumentMarshaler m) {
     private void setBooleanArg(ArgumentMarshaler m, Iterator<String> currentArgument) throws ArgsException {
-        // try {
+        //    4. Set functions down into the appropriate derivatives
+        //     try {
         m.set("true");
-        //} catch (ArgsException e) {
-        //}
+        //    4. Set functions down into the appropriate derivatives
+        //    } catch (ArgsException e) {
+        //    }
     }
 
     public int cardinality() {
@@ -281,7 +295,7 @@ public class Args1 {
 
     private abstract class ArgumentMarshaler {
 
-        //4.
+        //    4. Set functions down into the appropriate derivatives - thorws Exception to handle exception in common
         public abstract void set(Iterator<String> currentArgument) throws ArgsException;
 
         public abstract void set(String s) throws ArgsException;
@@ -300,8 +314,8 @@ public class Args1 {
 
         @Override
         public void set(String s) {
-            //4.
-            //booleanValue = true;
+            //    4. Set functions down into the appropriate derivatives - this function will be deleted
+            //    booleanValue = true;
         }
 
         @Override
@@ -314,10 +328,10 @@ public class Args1 {
 
         private String stringValue = "";
 
-        //4.
+        //    4. Set functions down into the appropriate derivatives - add only set function thorws excpetion
         @Override
         public void set(Iterator<String> currentArgument) throws ArgsException {
-            //5.
+            //    4. Set functions down into the appropriate derivatives for StringArgument
             try {
                 stringValue = currentArgument.next();
             } catch (NoSuchElementException e) {
@@ -341,10 +355,10 @@ public class Args1 {
 
         private int intValue = 0;
 
-        //4.
+        //    4. Set functions down into the appropriate derivatives - add only set function thorws excpetion
         @Override
         public void set(Iterator<String> currentArgument) throws ArgsException {
-            //5.
+            //    4. Set functions down into the appropriate derivatives for IntegerArgument
             String parameter = null;
             try {
                 parameter = currentArgument.next();
