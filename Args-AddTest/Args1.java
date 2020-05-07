@@ -161,22 +161,23 @@ public class Args1 {
         try {
             parameter = args[currentArgument];
             System.out.println("int parameter : " + parameter);
-            //Change Integer argument
-            //intArgs.get(argChar).setInteger(Integer.parseInt(parameter));
+            //    Integer argument 4. Let the function use IntegerArguemntMashaler
+            //    intArgs.get(argChar).setInteger(Integer.parseInt(parameter));
             intArgs.get(argChar).set(parameter);
         } catch (ArrayIndexOutOfBoundsException e) {
             valid = false;
             errorArgumentId = argChar;
             errorCode = ErrorCode.MISSING_INTEGER;
             throw new ArgsException();
-            //Hide NumberFormatException behind IntegerArguemntMashaler
-            //} catch (NumberFormatException e) {
+            //   Integer argument 5. Hide NumberFormatException behind IntegerArguemntMashaler
+            //   } catch (NumberFormatException e) {
         } catch (ArgsException e) {
             valid = false;
             errorArgumentId = argChar;
             errorParameter = parameter;
             errorCode = ErrorCode.INVALID_INTEGER;
-            //throw new ArgsException();
+            //    Integer argument 5. Hide NumberFormatException behind IntegerArguemntMashaler
+            //    throw new ArgsException();
             throw e;
         }
     }
@@ -184,8 +185,8 @@ public class Args1 {
     private void setStringArg(char argChar) throws ArgsException {
         currentArgument++;
         try {
-            //Change String argument
-            //stringArgs.get(argChar).setString(args[currentArgument]);
+            //    String argument 4.  Let the function use StringArguemntMashaler
+            //    stringArgs.get(argChar).setString(args[currentArgument]);
             stringArgs.get(argChar).set(args[currentArgument]);
         } catch (ArrayIndexOutOfBoundsException e) {
             valid = false;
@@ -253,23 +254,23 @@ public class Args1 {
     }
 
     public String getString(char arg) {
-        //Change String argument
         Args1.ArgumentMarshaler am = stringArgs.get(arg);
-        //  return am == null ? "" : am.getString();
+        //    String argument 5. Use Get in abstract class.
+        //       return am == null ? "" : am.getString();
         return am == null ? "" : (String) am.get();
     }
 
-    public int getInt(char arg) {
-        //Change Integer argument
+    public int getInt(char arg) {        
         Args1.ArgumentMarshaler am = intArgs.get(arg);
-        //return am == null ? 0 : am.getInteger();
+        //    Integer argument 6. Use Get in abstract class.
+        //    return am == null ? 0 : am.getInteger();
         return am == null ? 0 : (Integer) am.get();
     }
 
     public boolean getBoolean(char arg) {
         Args1.ArgumentMarshaler am = booleanArgs.get(arg);
-        // Get in abstract class 1.
-        //return am != null && am.getBoolean();
+        //    7. Use Get in abstract class.
+        //    return am != null && am.getBoolean();
         return am != null && (Boolean) am.get();
     }
 
@@ -294,9 +295,10 @@ public class Args1 {
         //    //    private boolean booleanValue = false;
         //    protected boolean booleanValue = false;
 
-        //Change String and Integer arguments
-        //private String stringValue;
-        //private int integerValue;
+        //    String argument 2. move stringValue to StringArgumentMarshaler
+        //    private String stringValue;
+        //    Integer arguments 2. Move IntValue to IntegerArgumentMarshaler
+        //    private int integerValue;
 
         //5. remove set function for Boolean
         //        public void setBoolean(boolean value) {
@@ -333,7 +335,7 @@ public class Args1 {
         //    TO
         public abstract void set(String s) throws ArgsException;
 
-        // Get in abstract class 2
+        //    6 create get method in Abstract class
         public abstract Object get();
     }
 
@@ -348,7 +350,7 @@ public class Args1 {
             booleanValue = true;
         }
 
-        //Get in abstract class 3.
+        //    8. Write get method in the class
         @Override
         public Object get() {
             return booleanValue;
@@ -357,7 +359,7 @@ public class Args1 {
 
     private class StringArgumentMarshaler extends ArgumentMarshaler {
 
-        //Change String argument
+        //String argument 3. TypedArgumentMarshaler has its own values
         private String stringValue = "";
 
         @Override
@@ -365,6 +367,7 @@ public class Args1 {
             stringValue = s;
         }
 
+        //    String argument 8. Write get method in the class
         @Override
         public Object get() {
             return stringValue;
@@ -373,7 +376,7 @@ public class Args1 {
 
     private class IntegerArgumentMarshaler extends ArgumentMarshaler {
 
-        //Change Integer argument
+        //Integer argument 3. TypedArgumentMarshaler has its own values
         private int intValue = 0;
 
         @Override
@@ -385,6 +388,7 @@ public class Args1 {
             }
         }
 
+        //    Integer argument 8. Write get method in the class
         @Override
         public Object get() {
             return intValue;
