@@ -5,6 +5,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+* Make ArgumentMarshler generic
+**/
+
 public class Args2 {
 
     private String schema;
@@ -15,9 +19,8 @@ public class Args2 {
     private Map<Character, ArgumentMarshaler> booleanArgs = new HashMap<Character, ArgumentMarshaler>();
     private Map<Character, ArgumentMarshaler> stringArgs = new HashMap<Character, ArgumentMarshaler>();
     private Map<Character, ArgumentMarshaler> intArgs = new HashMap<Character, ArgumentMarshaler>();
-    //Make ArgumentMarshler generic
-    //Use abstract class instance
-    //1.
+    
+    //1. Use ArgumentMarshaler instance
     private Map<Character, ArgumentMarshaler> marshalers = new HashMap<Character, ArgumentMarshaler>();
 
     private Set<Character> argsFound = new HashSet<Character>();
@@ -87,21 +90,24 @@ public class Args2 {
     }
 
     private void parseBooleanSchemaElement(char elementId) {
-        //2. booleanArgs.put(elementId, new BooleanArgumentMarshaler());
+        //    2. Use general Map.
+        //    booleanArgs.put(elementId, new BooleanArgumentMarshaler());
         ArgumentMarshaler m = new BooleanArgumentMarshaler();
         booleanArgs.put(elementId, m);
         marshalers.put(elementId, m);
     }
 
     private void parseIntegerSchemaElement(char elementId) {
-        //2.intArgs.put(elementId, new IntegerArgumentMarshaler());
+        //    2. Use general Map.
+        //    intArgs.put(elementId, new IntegerArgumentMarshaler());
         ArgumentMarshaler m = new IntegerArgumentMarshaler();
         intArgs.put(elementId, m);
         marshalers.put(elementId, m);
     }
 
     private void parseStringSchemaElement(char elementId) {
-        //2. stringArgs.put(elementId, new StringArgumentMarshaler());
+        //    2. Use general Map.
+        //    stringArgs.put(elementId, new StringArgumentMarshaler());
         ArgumentMarshaler m = new StringArgumentMarshaler();
         stringArgs.put(elementId, m);
         marshalers.put(elementId, m);
@@ -148,9 +154,9 @@ public class Args2 {
         }
     }
 
-    private boolean setArgument(char argChar) throws ArgsException {
-        //4. Eliminate all the duplicated calls to marshalers.get
+    private boolean setArgument(char argChar) throws ArgsException {        
         ArgumentMarshaler m = marshalers.get(argChar);
+        //    4. Eliminate all the duplicated calls to marshalers.get
         //        if (isBooleanArg(argChar))
         //            setBooleanArg(argChar, true);
         //        else if (isStringArg(argChar))
@@ -168,14 +174,15 @@ public class Args2 {
         return true;
     }
 
-    //5.
-    //FROM
+    //    5. Make below function in general
+    //    FROM
     //    private boolean isIntArg(char argChar) {
-    //        //3. return intArgs.containsKey(argChar);
+    //            //    3. Check argCahr  f the instace is IntegerArguemnt
+                  //    return intArgs.containsKey(argChar);
     //        ArgumentMarshaler m = marshalers.get(argChar);
     //        return m instanceof IntegerArgumentMarshaler;
     //    }
-    //TO
+    //    TO
     private boolean isIntArg(ArgumentMarshaler m) {
         return m instanceof IntegerArgumentMarshaler;
     }
@@ -214,9 +221,10 @@ public class Args2 {
         }
     }
 
-    //5.
+    //    5. Make below function in general
     //    private boolean isStringArg(char argChar) {
-    //        //3. return stringArgs.containsKey(argChar);
+    //        //    3. Check argCahr  f the instace is StringArguemnt 
+              //    return stringArgs.containsKey(argChar);
     //        ArgumentMarshaler m = marshalers.get(argChar);
     //        return m instanceof StringArgumentMarshaler;
     //    }
@@ -231,9 +239,10 @@ public class Args2 {
         }
     }
 
-    //    5.
+    //    5. Make below function in general
     //    private boolean isBooleanArg(char argChar) {
-    //        // 3. return booleanArgs.containsKey(argChar);
+    //        //     3. Check argCahr  f the instace is BooleanArguemnt 
+              //     return booleanArgs.containsKey(argChar);           
     //        ArgumentMarshaler m = marshalers.get(argChar);
     //        return m instanceof BooleanArgumentMarshaler;
     //    }
