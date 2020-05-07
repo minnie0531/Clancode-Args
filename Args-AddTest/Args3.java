@@ -12,12 +12,10 @@ public class Args3 {
     private boolean valid = true;
     private Set<Character> unexpectedArguments = new TreeSet<Character>();
 
-    //4. Remove the three old maps
-    //private Map<Character, ArgumentMarshaler> booleanArgs = new HashMap<Character, ArgumentMarshaler>();
-  //5. Remove the three old maps
-    //private Map<Character, ArgumentMarshaler> stringArgs = new HashMap<Character, ArgumentMarshaler>();
-    //private Map<Character, ArgumentMarshaler> intArgs = new HashMap<Character, ArgumentMarshaler>();
-    //Make ArgumentMarshler generic
+    //    4. Remove the three old maps
+    //    private Map<Character, ArgumentMarshaler> booleanArgs = new HashMap<Character, ArgumentMarshaler>();
+    //    private Map<Character, ArgumentMarshaler> stringArgs = new HashMap<Character, ArgumentMarshaler>();
+    //    private Map<Character, ArgumentMarshaler> intArgs = new HashMap<Character, ArgumentMarshaler>();
     private Map<Character, ArgumentMarshaler> marshalers = new HashMap<Character, ArgumentMarshaler>();
 
     private Set<Character> argsFound = new HashSet<Character>();
@@ -61,58 +59,59 @@ public class Args3 {
         return true;
     }
 
-    //6. Inline the tree parse methods
+    
     private void parseSchemaElement(String element) throws ParseException {
         char elementId = element.charAt(0);
         String elementTail = element.substring(1);
         validateSchemaElementId(elementId);
         if (isBooleanSchemaElement(elementTail))
-            //parseBooleanSchemaElement(elementId);
+            //    6. Inline the tree parse methods
+            //    parseBooleanSchemaElement(elementId);
             marshalers.put(elementId, new BooleanArgumentMarshaler());
         else if (isStringSchemaElement(elementTail))
-            //parseStringSchemaElement(elementId);
+            //    6. Inline the tree parse methods
+            //    parseStringSchemaElement(elementId);
             marshalers.put(elementId, new StringArgumentMarshaler());
         else if (isIntegerSchemaElement(elementTail)) {
-            //parseIntegerSchemaElement(elementId);
+            //    6. Inline the tree parse methods
+            //    parseIntegerSchemaElement(elementId);
             marshalers.put(elementId, new IntegerArgumentMarshaler());
         } else {
-            throw new ParseException(
-                    String.format("Argument: %c has invalid format: %s.",
-                            elementId, elementTail),
-                    0);
+            throw new ParseException(String.format("Argument: %c has invalid format: %s.", elementId, elementTail), 0);
         }
     }
 
     private void validateSchemaElementId(char elementId) throws ParseException {
         if (!Character.isLetter(elementId)) {
-            throw new ParseException(
-                    "Bad character:" + elementId + "in Args format: " + schema, 0);
+            throw new ParseException("Bad character:" + elementId + "in Args format: " + schema, 0);
         }
     }
-//6. Inline the tree parse methods
-    /*
-     * private void parseBooleanSchemaElement(char elementId) {
-     * //4. Remove the three old maps
-     * //ArgumentMarshaler m = new BooleanArgumentMarshaler();
-     * //booleanArgs.put(elementId, m);
-     * //marshalers.put(elementId, m);
-     * marshalers.put(elementId, new BooleanArgumentMarshaler());
-     * }
-     * private void parseIntegerSchemaElement(char elementId) {
-     * //5. Remove the three old maps
-     * // ArgumentMarshaler m = new IntegerArgumentMarshaler();
-     * // intArgs.put(elementId, m);
-     * // marshalers.put(elementId, m);
-     * marshalers.put(elementId, new IntegerArgumentMarshaler());
-     * }
-     * private void parseStringSchemaElement(char elementId) {
-     * //5. Remove the three old maps
-     * // ArgumentMarshaler m = new StringArgumentMarshaler();
-     * // stringArgs.put(elementId, m);
-     * // marshalers.put(elementId, m);
-     * marshalers.put(elementId, new StringArgumentMarshaler());
-     * }
-     */
+    
+//    6. Inline the tree parse methods - Remove parseBooleanSchemaElement, parseIntegerSchemaElement and parseStringSchemaElement
+/**************************************************************************/  
+      private void parseBooleanSchemaElement(char elementId) {
+      //    5. Remove the three old maps
+      //    ArgumentMarshaler m = new BooleanArgumentMarshaler();
+      //    booleanArgs.put(elementId, m);
+      //    marshalers.put(elementId, m);
+          marshalers.put(elementId, new BooleanArgumentMarshaler());
+      }
+      private void parseIntegerSchemaElement(char elementId) {
+      //    5. Remove the three old maps
+      //     ArgumentMarshaler m = new IntegerArgumentMarshaler();
+      //     intArgs.put(elementId, m);
+      //     marshalers.put(elementId, m);
+          marshalers.put(elementId, new IntegerArgumentMarshaler());
+      }
+      private void parseStringSchemaElement(char elementId) {
+      //    5. Remove the three old maps
+      //     ArgumentMarshaler m = new StringArgumentMarshaler();
+      //     stringArgs.put(elementId, m);
+      //     marshalers.put(elementId, m);
+          marshalers.put(elementId, new StringArgumentMarshaler());
+      }
+/**************************************************************************/
+     
 
     private boolean isStringSchemaElement(String elementTail) {
         return elementTail.equals("*");
@@ -157,90 +156,95 @@ public class Args3 {
 
     private boolean setArgument(char argChar) throws ArgsException {
         ArgumentMarshaler m = marshalers.get(argChar);
-        //      1. Inline isXXX methods
-        //        if (isBooleanArg(m))
-        //            setBooleanArg(argChar);
-        //        else if (isStringArg(m))
-        //            setStringArg(argChar);
-        //        else if (isIntArg(m))
-        //            setIntArg(argChar);
-
-        //3. Use marshalers map in the set
-        //Handle Exceptions in Set methods and make them simple
+        //      1. Inline isXXX methods to this function
+        //      if (isBooleanArg(m))
+        //          setBooleanArg(argChar);
+        //      else if (isStringArg(m))
+        //          setStringArg(argChar);
+        //      else if (isIntArg(m))
+        //          setIntArg(argChar);
+        //    3. andle Exceptions in Set methods and make them simple - Add try-catch         
         try {
             if (m instanceof BooleanArgumentMarshaler)
-                //2. Use marshalers map in the set
-                // setBooleanArg(argChar);
+                //    2. Use marshalers map in the set
+                //     setBooleanArg(argChar);
                 setBooleanArg(m);
             else if (m instanceof StringArgumentMarshaler)
-                //3. Use marshalers map in the set
-                //setStringArg(argChar);
+                //    2. Use marshalers map in the set
+                //    setStringArg(argChar);
                 setStringArg(m);
             else if (m instanceof IntegerArgumentMarshaler)
-                //3. Use marshalers map in the set
-                //setIntArg(argChar);
+                //    2. Use marshalers map in the set
+                //     setIntArg(argChar);
                 setIntArg(m);
             else
                 return false;
         } catch (ArgsException e) {
+            //    3. andle Exceptions in Set methods and make them simple - set common variables
             valid = false;
             errorArgumentId = argChar;
             throw e;
         }
         return true;
     }
-    //  1. Inline isXXX methods
+    
+    //  1. Inline isXXX methods - remove them and move the code into setArgument
     //    private boolean isIntArg(ArgumentMarshaler m) {
     //        return m instanceof IntegerArgumentMarshaler;
     //    }
 
     @SuppressWarnings("deprecation")
-    //3. Use marshalers map in the set
-    //private void setIntArg(char argChar) throws ArgsException {
+    //    2. Use marshalers map in the set
+    //    private void setIntArg(char argChar) throws ArgsException {
     private void setIntArg(ArgumentMarshaler m) throws ArgsException {
         currentArgument++;
         String parameter = null;
         try {
             parameter = args[currentArgument];
-            //intArgs.get(argChar).set(parameter);
+            //    2. Use marshalers map in the set
+            //    intArgs.get(argChar).set(parameter);
             m.set(parameter);
         } catch (ArrayIndexOutOfBoundsException e) {
-            //valid = false;
-            //errorArgumentId = argChar;
+            //    3. andle Exceptions in Set methods and make them simple - remove common variables in each set function
+            //    valid = false;
+            //    errorArgumentId = argChar;
             errorCode = ErrorCode.MISSING_INTEGER;
             throw new ArgsException();
         } catch (ArgsException e) {
-            //valid = false;
-            //errorArgumentId = argChar;
+            //    3. andle Exceptions in Set methods and make them simple - remove common variables in each set function
+            //    valid = false;
+            //    errorArgumentId = argChar;
             errorParameter = parameter;
             errorCode = ErrorCode.INVALID_INTEGER;
             throw e;
         }
     }
 
-    //3. Use marshalers map in the set
-    //private void setStringArg(char argChar) throws ArgsException {
+    //    2. Use marshalers map in the set
+    //    private void setStringArg(char argChar) throws ArgsException {
     private void setStringArg(ArgumentMarshaler m) throws ArgsException {
         currentArgument++;
         try {
-            //stringArgs.get(argChar).set(args[currentArgument]);
+            //    2.  Use marshalers map in the set
+            //    stringArgs.get(argChar).set(args[currentArgument]);
             m.set(args[currentArgument]);
         } catch (ArrayIndexOutOfBoundsException e) {
-            //valid = false;
-            //errorArgumentId = argChar;
+            //    3. andle Exceptions in Set methods and make them simple - remove common variables in each set function
+            //    valid = false;
+            //    errorArgumentId = argChar;
             errorCode = ErrorCode.MISSING_STRING;
             throw new ArgsException();
         }
 
     }
 
-    //  1. Inline isXXX methods
+    //  1. Inline isXXX methods - remove them and move the code into setArgument
     //    private boolean isStringArg(ArgumentMarshaler m) {
     //        return m instanceof StringArgumentMarshaler;
     //    }
 
-    //2. Use marshalers map in the set
-    //private void setBooleanArg(char argChar) {
+    //    2. Use marshalers map in the set
+    //    private void setBooleanArg(char argChar) {
     private void setBooleanArg(ArgumentMarshaler m) {
         try {
             //booleanArgs.get(argChar).set("true");
@@ -249,7 +253,7 @@ public class Args3 {
         }
     }
 
-    //    1. Inline isXXX methods
+    //    1. Inline isXXX methods - remove them and move the code into setArgument
     //    private boolean isBooleanArg(ArgumentMarshaler m) {
     //        return m instanceof BooleanArgumentMarshaler;
     //    }
@@ -295,9 +299,9 @@ public class Args3 {
     }
 
     public String getString(char arg) {
-        //5. Remove the three old maps
-        //        Args3.ArgumentMarshaler am = stringArgs.get(arg);
-        //        return am == null ? "" : (String) am.get();
+        //    4. Remove the three old maps
+        //    Args3.ArgumentMarshaler am = stringArgs.get(arg);
+        //    return am == null ? "" : (String) am.get();
         Args3.ArgumentMarshaler am = marshalers.get(arg);
         try {
             return am == null ? "" : (String) am.get();
@@ -307,9 +311,9 @@ public class Args3 {
     }
 
     public int getInt(char arg) {
-        //5. Remove the three old maps
-        //        Args3.ArgumentMarshaler am = intArgs.get(arg);
-        //        return am == null ? 0 : (Integer) am.get();
+        //    4. Remove the three old maps
+        //    Args3.ArgumentMarshaler am = intArgs.get(arg);
+        //    return am == null ? 0 : (Integer) am.get();
         Args3.ArgumentMarshaler am = marshalers.get(arg);
         try {
             return am == null ? 0 : (Integer) am.get();
@@ -319,9 +323,9 @@ public class Args3 {
     }
 
     public boolean getBoolean(char arg) {
-        //4. Remove the three old maps
-        //        Args3.ArgumentMarshaler am = booleanArgs.get(arg);
-        //        return am != null && (Boolean) am.get();
+        //    4. Remove the three old maps
+        //    Args3.ArgumentMarshaler am = booleanArgs.get(arg);
+        //    return am != null && (Boolean) am.get();
         Args3.ArgumentMarshaler am = marshalers.get(arg);
         boolean b = false;
         try {
