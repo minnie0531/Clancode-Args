@@ -29,7 +29,7 @@ public class Args2 {
         MISSING_INTEGER,
         INVALID_INTEGER,
         UNEXPECTED_ARGUMENT,
-        //4. extend type for Double
+        //    4. extend type for Double - Add ErrorCode 
         MISSING_DOUBLE,
         INVALID_DOUBLE
     }
@@ -64,8 +64,7 @@ public class Args2 {
         char elementId = element.charAt(0);
         String elementTail = element.substring(1);
         validateSchemaElementId(elementId);
-        //4. extend type for Double
-        //clean this function
+        //    4. extend type for Double - Clean isXXXXchemaElement and inline them in tis function
         //        if (isBooleanSchemaElement(elementTail))
         //            marshalers.put(elementId, new BooleanArgumentMarshaler());
         //        else if (isStringSchemaElement(elementTail))
@@ -75,9 +74,10 @@ public class Args2 {
         if (elementTail.length() == 0)
             marshalers.put(elementId, new BooleanArgumentMarshaler());
         else if (elementTail.equals("*"))
-            marshalers.put(elementId, new StringArgumentMarshaler());
+            marshalers.put(elementId, new StringArgumentMarshaler());        
         else if (elementTail.equals("#"))
             marshalers.put(elementId, new IntegerArgumentMarshaler());
+        //    4. extend type for Double - Add newShcema for Double
         else if (elementTail.equals("##"))
             marshalers.put(elementId, new DoubleArgumentMarshaler());
         else
@@ -132,11 +132,11 @@ public class Args2 {
         }
     }
 
-    //1. Remove type-case
     private boolean setArgument(char argChar) throws ArgsException {
         ArgumentMarshaler m = marshalers.get(argChar);
         if (m == null)
             return false;
+        //    1. Remove type-case
         //        try {
         //            if (m instanceof BooleanArgumentMarshaler)
         //                m.set(currentArgument);
@@ -149,7 +149,7 @@ public class Args2 {
         //            errorArgumentId = argChar;
         //            throw e;
         //        }
-        //return true;
+        //    return true;
         try {
             m.set(currentArgument);
             return true;
@@ -186,7 +186,7 @@ public class Args2 {
         case MISSING_INTEGER:
             return String.format("Could not find integer parameter for -%c.",
                     errorArgumentId);
-        //4. extend type for Double
+        //    4. extend type for Double - Handle new Errorcodes
         case INVALID_DOUBLE:
             return String.format("Argument -%c expects a double but was '%s'.",
                     errorArgumentId, errorParameter);
@@ -235,7 +235,7 @@ public class Args2 {
         }
     }
 
-    //4. extend type for Double
+    //    4. extend type for Double - Add get function for double
     public double getDouble(char arg) {
         Args2.ArgumentMarshaler am = marshalers.get(arg);
         try {
@@ -256,8 +256,8 @@ public class Args2 {
     private class ArgsException extends Exception {
     }
 
-    //3. turn ArgumentMarshaler into an interface.
-    //   private abstract class ArgumentMarshaler {
+    //    3. turn ArgumentMarshaler into an interface.
+    //     private abstract class ArgumentMarshaler {
     private interface ArgumentMarshaler {
 
         public abstract void set(Iterator<String> currentArgument) throws ArgsException;
@@ -265,7 +265,7 @@ public class Args2 {
         public abstract Object get();
     }
 
-    //3.
+    //    3. turn ArgumentMarshaler into an interface.
     //   private class BooleanArgumentMarshaler extends ArgumentMarshaler {
     private class BooleanArgumentMarshaler implements ArgumentMarshaler {
 
@@ -282,8 +282,8 @@ public class Args2 {
         }
     }
 
-    //3.
-    //private class StringArgumentMarshaler extends ArgumentMarshaler {
+    //    3. turn ArgumentMarshaler into an interface.
+    //    private class StringArgumentMarshaler extends ArgumentMarshaler {
     private class StringArgumentMarshaler implements ArgumentMarshaler {
 
         private String stringValue = "";
@@ -304,29 +304,31 @@ public class Args2 {
         }
     }
 
-    //3.
-    //private class IntegerArgumentMarshaler extends ArgumentMarshaler {
+    //    3. turn ArgumentMarshaler into an interface.
+    //    private class IntegerArgumentMarshaler extends ArgumentMarshaler {
     private class IntegerArgumentMarshaler implements ArgumentMarshaler {
 
         private int intValue = 0;
 
         @Override
         public void set(Iterator<String> currentArgument) throws ArgsException {
-            String parameter = null;
-            //2. clean this class up
-
+            String parameter = null;      
+            
             try {
                 parameter = currentArgument.next();
-                //set(parameter);
+                //    2. clean IntegerArgumentMarshaler up - to remove set in below
+                //    set(parameter);
                 intValue = Integer.parseInt(parameter);
             } catch (NoSuchElementException e) {
                 errorCode = ErrorCode.MISSING_INTEGER;
                 throw new ArgsException();
-                //            } catch (ArgsException e) {
+                //    2. clean IntegerArgumentMarshaler up
+                //    } catch (ArgsException e) {
             } catch (NumberFormatException e) {
                 errorParameter = parameter;
                 errorCode = ErrorCode.INVALID_INTEGER;
-                //throw e;
+                //    2. clean IntegerArgumentMarshaler up
+                //    throw e;
                 throw new ArgsException();
             }
         }
@@ -337,7 +339,7 @@ public class Args2 {
         }
     }
 
-    ///4. extend type for Double
+    //    4. extend type for Double - Add DoubleArgumentMarshaler class
     private class DoubleArgumentMarshaler implements ArgumentMarshaler {
 
         private double doubleValue = 0;
