@@ -11,11 +11,11 @@ import java.util.TreeSet;
 
 /**
 * This class should go with ArgsException.java
+* Let's have ArgsException
 **/
 
 public class Args3 {
 
-   //Let's have ArgsException
     private String schema;
     private boolean valid = true;
     private Set<Character> unexpectedArguments = new TreeSet<Character>();
@@ -24,11 +24,13 @@ public class Args3 {
     private Iterator<String> currentArgument;
     private char errorArgumentId = '\0';
     private String errorParameter = "TILT";
-    //private ErrorCode errorCode = ErrorCode.OK;
+    //    3. Use ArgsException
+    //    private ErrorCode errorCode = ErrorCode.OK;
     private ArgsException.ErrorCode errorCode = ArgsException.ErrorCode.OK;
     private List<String> argsList;
 
-    //public Args3(String schema, String[] args) throws ParseException {
+    //    2. Change ParseException to ArgsException
+    //    public Args3(String schema, String[] args) throws ParseException {
     public Args3(String schema, String[] args) throws ArgsException {
         argsList = Arrays.asList(args);
         valid = parse();
@@ -45,6 +47,7 @@ public class Args3 {
         return valid;
     }
 
+    //    2. Change ParseException to ArgsException
     //private boolean parseSchema() throws ParseException {
     private boolean parseSchema() throws ArgsException {
     for (String element : schema.split(",")) {
@@ -56,7 +59,8 @@ public class Args3 {
         return true;
     }
 
-   // private void parseSchemaElement(String element) throws ParseException {
+    //    2. Change ParseException to ArgsException
+    // private void parseSchemaElement(String element) throws ParseException {
     private void parseSchemaElement(String element) throws ArgsException {
         char elementId = element.charAt(0);
         String elementTail = element.substring(1);
@@ -70,19 +74,18 @@ public class Args3 {
         else if (elementTail.equals("##"))
             marshalers.put(elementId, new DoubleArgumentMarshaler());
         else
-            //throw new ParseException(String.format("Argument: %c has invalid format: %s.", elementId, elementTail), 0);
-            throw new ArgsException(
-                    String.format("Argument: %c has invalid format: %s.",
-                    elementId,elementTail));
+            //    2. Change ParseException to ArgsException
+            //    throw new ParseException(String.format("Argument: %c has invalid format: %s.", elementId, elementTail), 0);
+            throw new ArgsException(String.format("Argument: %c has invalid format: %s.", elementId,elementTail));
     }
 
-    //private void validateSchemaElementId(char elementId) throws ParseException {
+    //    2. Change ParseException to ArgsException
+    //    private void validateSchemaElementId(char elementId) throws ParseException {
     private void validateSchemaElementId(char elementId) throws ArgsException {
         if (!Character.isLetter(elementId)) {
-            //throw new ParseException(
-            //        "Bad character:" + elementId + "in Args format: " + schema, 0);
-            throw new ArgsException(
-                    "Bad character:" + elementId + "in Args format: " + schema);
+            //    2. Change ParseException to ArgsException
+            //    throw new ParseException("Bad character:" + elementId + "in Args format: " + schema, 0);
+            throw new ArgsException("Bad character:" + elementId + "in Args format: " + schema);
         }
     }
 
@@ -110,7 +113,8 @@ public class Args3 {
             argsFound.add(argChar);
         else {
             unexpectedArguments.add(argChar);
-            //errorCode = ErrorCode.UNEXPECTED_ARGUMENT;
+            //    3. Use ArgsException
+            //    errorCode = ErrorCode.UNEXPECTED_ARGUMENT;
             errorCode = ArgsException.ErrorCode.UNEXPECTED_ARGUMENT;
             valid = false;
         }
@@ -157,7 +161,6 @@ public class Args3 {
         case MISSING_INTEGER:
             return String.format("Could not find integer parameter for -%c.",
                     errorArgumentId);
-
         case INVALID_DOUBLE:
             return String.format("Argument -%c expects a double but was '%s'.",
                     errorArgumentId, errorParameter);
@@ -224,10 +227,9 @@ public class Args3 {
         return valid;
     }
 
-    //Let's have ArgsException
-//    private class ArgsException extends Exception {
-//    }
-
+    //    1. Change ArgsException to puble to handle Excpetions
+    //    private class ArgsException extends Exception {
+    //    }
 
     private interface ArgumentMarshaler {
 
@@ -262,7 +264,8 @@ public class Args3 {
             try {
                 stringValue = currentArgument.next();
             } catch (NoSuchElementException e) {
-                //errorCode = ErrorCode.MISSING_STRING;
+                //    3. Use ArgsException
+                //    errorCode = ErrorCode.MISSING_STRING;
                 errorCode = ArgsException.ErrorCode.MISSING_STRING;
                 throw new ArgsException();
             }
@@ -289,13 +292,15 @@ public class Args3 {
 
                 intValue = Integer.parseInt(parameter);
             } catch (NoSuchElementException e) {
-                //errorCode = ErrorCode.MISSING_INTEGER;
+                //    3. Use ArgsException
+                //    errorCode = ErrorCode.MISSING_INTEGER;
                 errorCode = ArgsException.ErrorCode.MISSING_INTEGER;
                 throw new ArgsException();
 
             } catch (NumberFormatException e) {
                 errorParameter = parameter;
-                //errorCode = ErrorCode.INVALID_INTEGER;
+                //    3. Use ArgsException
+                //    errorCode = ErrorCode.INVALID_INTEGER;
                 errorCode = ArgsException.ErrorCode.INVALID_INTEGER;
                 throw new ArgsException();
             }
@@ -318,12 +323,14 @@ public class Args3 {
                 parameter = currentArgument.next();
                 doubleValue = Double.parseDouble(parameter);
             } catch (NoSuchElementException e) {
-                //errorCode = ErrorCode.MISSING_DOUBLE;
+                //    3. Use ArgsException
+                //    errorCode = ErrorCode.MISSING_DOUBLE;
                 errorCode = ArgsException.ErrorCode.MISSING_DOUBLE;
                 throw new ArgsException();
             } catch (NumberFormatException e) {
                 errorParameter = parameter;
-                //errorCode = ErrorCode.INVALID_DOUBLE;
+                //    3. Use ArgsException
+                //  errorCode = ErrorCode.INVALID_DOUBLE;
                 errorCode = ArgsException.ErrorCode.INVALID_DOUBLE;
                 throw new ArgsException();
             }
